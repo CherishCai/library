@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+      layout:decorate="layout">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <title>添加图书</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- page heading start-->
+    <div class="page-heading">
+        <h3>
+            添加图书
+        </h3>
+        <ul class="breadcrumb">
+            <li>
+                <a href="/treatise/list">图书管理</a>
+            </li>
+            <li class="active"> 新增图书 </li>
+        </ul>
+    </div>
+    <!-- page heading end-->
+
+    <!--body wrapper start-->
+    <div class="wrapper">
+
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <div class="panel-body">
+                        <div class=" form">
+                            <form class="cmxform form-horizontal adminex-form" id="treatiseForm"
+                                  method="post" th:action="@{/treatise/save}" >
+
+                                <div class="form-group">
+                                    <label for="nickname" class="control-label col-md-2 col-sm-2">ISBN:</label>
+                                    <div class="col-md-8 col-sm-8">
+                                        <input type="text" id="nickname" name="nickname" class="form-control"
+                                               placeholder="ISBN号" minlength="1" maxlength="16" required autofocus
+                                               th:value="${treatise} ? ${treatise.ISBN}" />
+                                        <p class="help-block">
+                                            <label class="error-label"
+                                                   th:text="${errorMap} ? ${errorMap['ISBN']}"></label>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="bookName" class="control-label col-md-2 col-sm-2">书名:</label>
+                                    <div class="col-md-8 col-sm-8">
+                                        <input type="text" id="bookName" name="bookName" class="form-control"
+                                               placeholder="图书名称" minlength="6" maxlength="16" required
+                                               th:value="${treatise} ? ${treatise.bookName}" />
+                                        <p class="help-block">
+                                            <label class="error-label"
+                                                   th:text="${errorMap} ? ${errorMap['bookName']}"></label>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-8 col-sm-8">
+                                        <button class="btn btn-primary" type="submit">
+                                            <span class="glyphicon glyphicon-saved" aria-hidden="true"></span>
+                                            提交
+                                        </button>
+                                        <button class="btn btn-default" type="reset">
+                                            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                                            重置
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<div layout:fragment="javascript">
+    <script type="text/javascript">
+        $(function () {
+            //菜单的active
+            $('.custom-nav .nav-active').removeClass('nav-active');
+            $('.custom-nav .active').removeClass('active');
+            $("#treatiseMenu").addClass("nav-active");
+            $("#treatiseLi").addClass("active");
+
+            $('#treatiseForm').validate({
+                rules: {
+                },
+                messages: {
+                },
+                errorElement: "em",
+                errorPlacement: function ( error, element ) {
+                    error.addClass( "help-block" );
+                    if ( element.prop( "type" ) === "checkbox" ) {
+                        error.insertAfter( element.parent( "label" ) );
+                    } else {
+                        error.insertAfter( element );
+                    }
+                },
+                highlight: function ( element, errorClass, validClass ) {
+                    $( element ).parents( ".col-sm-5" ).addClass( "has-error" ).removeClass( "has-success" );
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $( element ).parents( ".col-sm-5" ).addClass( "has-success" ).removeClass( "has-error" );
+                }
+            });
+        });
+    </script>
+    <p class="msg-block" th:if="${errorMap}">
+        <script th:if="${errorMap['msg']}" th:inline="javascript">
+            /*<![CDATA[*/
+            var msg = [[${errorMap['msg']}]] ;
+            $(function () {
+                myModalWarning(msg);
+            });
+            /*]]>*/
+        </script>
+    </p>
+</div>
+</body>
+</html>

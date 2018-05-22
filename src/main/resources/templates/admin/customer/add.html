@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+      layout:decorate="layout">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <title>添加借阅卡</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- page heading start-->
+    <div class="page-heading">
+        <h3>
+            添加借阅卡
+        </h3>
+        <ul class="breadcrumb">
+            <li>
+                <a href="/customer/list">借阅卡管理</a>
+            </li>
+            <li class="active"> 新增借阅卡 </li>
+        </ul>
+    </div>
+    <!-- page heading end-->
+
+    <!--body wrapper start-->
+    <div class="wrapper">
+
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <div class="panel-body">
+                        <div class=" form">
+                            <form class="cmxform form-horizontal adminex-form" id="customerForm"
+                                  method="post" th:action="@{/customer/save}" >
+
+                                <div class="form-group">
+                                    <label for="nickname" class="control-label col-md-2 col-sm-2">呢称:</label>
+                                    <div class="col-md-8 col-sm-8">
+                                        <input type="text" id="nickname" name="nickname" class="form-control"
+                                               placeholder="学生姓名" minlength="1" maxlength="16" required autofocus
+                                               th:value="${customer} ? ${customer.nickname}" />
+                                        <p class="help-block">
+                                            <label class="error-label"
+                                                   th:text="${errorMap} ? ${errorMap['nickname']}"></label>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="username" class="control-label col-md-2 col-sm-2">学号:</label>
+                                    <div class="col-md-8 col-sm-8">
+                                        <input type="text" id="username" name="username" class="form-control"
+                                               placeholder="学号" minlength="6" maxlength="16" required
+                                               th:value="${customer} ? ${customer.username}" />
+                                        <p class="help-block">
+                                            <label class="error-label"
+                                                   th:text="${errorMap} ? ${errorMap['username']}"></label>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" class="control-label col-md-2 col-sm-2">密码:</label>
+                                    <div class="col-md-8 col-sm-8">
+                                        <input type="text" id="password" name="password" class="form-control"
+                                               placeholder="登陆密码" minlength="6" maxlength="16" required
+                                               th:value="${customer} ? ${customer.password}" />
+                                        <p class="help-block">
+                                            <label class="error-label"
+                                                   th:text="${errorMap} ? ${errorMap['password']}"></label>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" hidden>
+                                    <label for="active" class="control-label col-md-2 col-sm-2">状态：</label>
+                                    <div class="col-md-8 col-sm-8">
+                                        <select id="active" name="active" class="form-control"
+                                                th:value="${customer} ? ${customer.active}">
+                                            <option value="1">激活</option>
+                                            <option value="0">冻结</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-8 col-sm-8">
+                                        <button class="btn btn-primary" type="submit">
+                                            <span class="glyphicon glyphicon-saved" aria-hidden="true"></span>
+                                            提交
+                                        </button>
+                                        <button class="btn btn-default" type="reset">
+                                            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                                            重置
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<div layout:fragment="javascript">
+    <script type="text/javascript">
+        // 手机号码验证
+        $.validator.addMethod("isMobile", function(value, element, params) {
+            var length = value.length;
+            var mobile = /^[1][34578][0-9]{9}$/;
+            return this.optional(element) || (length == 11 && mobile.test(value));
+        }, "请正确填写您的手机号码");
+
+        $(function () {
+            //菜单的active
+            $('.custom-nav .nav-active').removeClass('nav-active');
+            $('.custom-nav .active').removeClass('active');
+            $("#userMenu").addClass("nav-active");
+            $("#customerLi").addClass("active");
+
+            $('#customerForm').validate({
+                rules: {
+                    telephone : {
+                        required : true,
+                        isMobile : true
+                    }
+                },
+                messages: {
+                },
+                errorElement: "em",
+                errorPlacement: function ( error, element ) {
+                    error.addClass( "help-block" );
+                    if ( element.prop( "type" ) === "checkbox" ) {
+                        error.insertAfter( element.parent( "label" ) );
+                    } else {
+                        error.insertAfter( element );
+                    }
+                },
+                highlight: function ( element, errorClass, validClass ) {
+                    $( element ).parents( ".col-sm-5" ).addClass( "has-error" ).removeClass( "has-success" );
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $( element ).parents( ".col-sm-5" ).addClass( "has-success" ).removeClass( "has-error" );
+                }
+            });
+        });
+    </script>
+    <p class="msg-block" th:if="${errorMap}">
+        <script th:if="${errorMap['msg']}" th:inline="javascript">
+            /*<![CDATA[*/
+            var msg = [[${errorMap['msg']}]] ;
+            $(function () {
+                myModalWarning(msg);
+            });
+            /*]]>*/
+        </script>
+    </p>
+</div>
+</body>
+</html>

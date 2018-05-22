@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+      layout:decorate="layout">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <title>添加借阅记录</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- page heading start-->
+    <div class="page-heading">
+        <h3>
+            添加借阅记录
+        </h3>
+        <ul class="breadcrumb">
+            <li>
+                <a href="/record/list">借阅记录管理</a>
+            </li>
+            <li class="active"> 新增借阅记录 </li>
+        </ul>
+    </div>
+    <!-- page heading end-->
+
+    <!--body wrapper start-->
+    <div class="wrapper">
+
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <div class="panel-body">
+                        <div class=" form">
+                            <form class="cmxform form-horizontal adminex-form" id="recordForm"
+                                  method="post" th:action="@{/record/save}" >
+
+                                <div class="form-group">
+                                    <label for="nickname" class="control-label col-md-2 col-sm-2">呢称:</label>
+                                    <div class="col-md-8 col-sm-8">
+                                        <input type="text" id="nickname" name="nickname" class="form-control"
+                                               placeholder="学生姓名" minlength="1" maxlength="16" required autofocus
+                                               th:value="${record} ? ${record.nickname}" />
+                                        <p class="help-block">
+                                            <label class="error-label"
+                                                   th:text="${errorMap} ? ${errorMap['nickname']}"></label>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="username" class="control-label col-md-2 col-sm-2">学号:</label>
+                                    <div class="col-md-8 col-sm-8">
+                                        <input type="text" id="username" name="username" class="form-control"
+                                               placeholder="学号" minlength="6" maxlength="16" required
+                                               th:value="${record} ? ${record.username}" />
+                                        <p class="help-block">
+                                            <label class="error-label"
+                                                   th:text="${errorMap} ? ${errorMap['username']}"></label>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="isbn" class="control-label col-md-2 col-sm-2">ISBN:</label>
+                                    <div class="col-md-8 col-sm-8">
+                                        <input type="text" id="isbn" name="ISBN" class="form-control"
+                                               placeholder="ISBN" maxlength="32" required
+                                               th:value="${record} ? ${record.ISBN}" />
+                                        <p class="help-block">
+                                            <label class="error-label"
+                                                   th:text="${errorMap} ? ${errorMap['ISBN']}"></label>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="bookName" class="control-label col-md-2 col-sm-2">图书名称:</label>
+                                    <div class="col-md-8 col-sm-8">
+                                        <input type="text" id="bookName" name="bookName" class="form-control"
+                                               placeholder="图书名称" required
+                                               th:value="${record} ? ${record.bookName}" />
+                                        <p class="help-block">
+                                            <label class="error-label"
+                                                   th:text="${errorMap} ? ${errorMap['bookName']}"></label>
+                                        </p>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-8 col-sm-8">
+                                        <button class="btn btn-primary" type="submit">
+                                            <span class="glyphicon glyphicon-saved" aria-hidden="true"></span>
+                                            提交
+                                        </button>
+                                        <button class="btn btn-default" type="reset">
+                                            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                                            重置
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<div layout:fragment="javascript">
+    <script type="text/javascript">
+        // 手机号码验证
+        $.validator.addMethod("isMobile", function(value, element, params) {
+            var length = value.length;
+            var mobile = /^[1][34578][0-9]{9}$/;
+            return this.optional(element) || (length == 11 && mobile.test(value));
+        }, "请正确填写您的手机号码");
+
+        $(function () {
+            //菜单的active
+            $('.custom-nav .nav-active').removeClass('nav-active');
+            $('.custom-nav .active').removeClass('active');
+            $("#userMenu").addClass("nav-active");
+            $("#recordLi").addClass("active");
+
+            $('#recordForm').validate({
+                rules: {
+                    telephone : {
+                        required : true,
+                        isMobile : true
+                    }
+                },
+                messages: {
+                },
+                errorElement: "em",
+                errorPlacement: function ( error, element ) {
+                    error.addClass( "help-block" );
+                    if ( element.prop( "type" ) === "checkbox" ) {
+                        error.insertAfter( element.parent( "label" ) );
+                    } else {
+                        error.insertAfter( element );
+                    }
+                },
+                highlight: function ( element, errorClass, validClass ) {
+                    $( element ).parents( ".col-sm-5" ).addClass( "has-error" ).removeClass( "has-success" );
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $( element ).parents( ".col-sm-5" ).addClass( "has-success" ).removeClass( "has-error" );
+                }
+            });
+        });
+    </script>
+    <p class="msg-block" th:if="${errorMap}">
+        <script th:if="${errorMap['msg']}" th:inline="javascript">
+            /*<![CDATA[*/
+            var msg = [[${errorMap['msg']}]] ;
+            $(function () {
+                myModalWarning(msg);
+            });
+            /*]]>*/
+        </script>
+    </p>
+</div>
+</body>
+</html>

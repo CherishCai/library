@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<configuration>
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%cyan(%date{HH:mm:ss.SSS}) %magenta() %highlight(%-5level) %blue([%file : %line])
+                    %boldGreen(%msg%n)
+                </pattern>
+            </encoder>
+        </appender>
+        <!-- hibernate 输出SQL -->
+        <logger name="org.hibernate.SQL" level="DEBUG"/>
+        <logger name="org.hibernate" level="INFO"/>
+        <logger name="cn.cherish" level="DEBUG"/>
+
+        <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>../logs/library.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>../logs/library.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="console"/>
+            <appender-ref ref="rollingFile"/>
+        </root>
+
+</configuration>

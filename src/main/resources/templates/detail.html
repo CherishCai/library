@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>著作信息</title>
+    <link href="/web/css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="/web/css/detail.css" rel="stylesheet" type="text/css"/>
+    <link href="/tools/bootstrap-3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="container">
+    <div id="hd" class="ue-clear">
+        <div class="user-logo2" style="float:right;padding-top: 15px;padding-right: 100px;">
+            <a th:if="${#session} ? ${#session.getAttribute('isLogin')}" href="/customer" target="_blank">
+                <span style="color:#4b8dde;font-size: 16px;" th:text="'欢迎您，'+${#session.getAttribute('customerName')}+' '">欢迎您，小明&nbsp;&nbsp;&nbsp;</span>
+                <img src="/web/img/personal.png"/>
+            </a>
+            <a th:unless="${#session} ? ${#session.getAttribute('isLogin')}" href="/customer" target="_blank">
+                <span style="color:#4b8dde;font-size: 16px;">请登陆&nbsp;&nbsp;&nbsp;</span>
+                <img src="/web/img/personal.png"/>
+            </a>
+        </div>
+        <a href="/"><div class="logo"></div></a>
+        <!--<div class="inputArea">-->
+            <!--<input type="text" class="searchInput"/>-->
+            <!--<input type="button" class="searchButton" value="搜索"/>-->
+            <!--<a class="advanced" href="/advanced">高级搜索</a>-->
+        <!--</div>-->
+    </div>
+    <div class="nav2" style="margin-bottom: 24px;">
+        <br/>
+    </div>
+    <div id="bd" class="ue-clear">
+        <div id="main">
+            <div class="sideBar">
+                <div class="subfield">专著分类</div>
+                <ul class="subfieldContext">
+                    <li th:each="category:*{categories}">
+                        <a th:href="'/result?q='+${category.id}+'&t=pc'"><span class="name" th:text="${category.name}">数据挖掘</span></a>
+                    </li>
+                    <li class="more">
+                        <span class="text">更多</span>
+                        <i class="moreIcon"></i>
+                    </li>
+                </ul>
+                <div class="sideBarShowHide">
+                    <a href="javascript:void(0);" class="icon"></a>
+                </div>
+            </div>
+            <div class="historyArea">
+                <div class="mySearch">
+                    <h6>专著阅读热度排行榜</h6>
+                    <ul class="historyList">
+                        <li th:each="treatise,status:${treatisesTop}">
+                            <a th:href="'/'+${treatise.id}+'/detail'" th:text="${treatise.bookName}"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="detailArea">
+                <div class="title" th:text="${treatise.bookName}">
+
+                </div>
+                <!--<div class="english">
+                    Application of data mining technology in the promotion of mobile electronic business
+                </div>-->
+                <br/>
+                <div class="operators">
+                    <a th:href="'/reading/'+${treatise.id}" target="_blank"><input type="button" class="operator" value="在线阅读"/></a>
+                </div>
+                <br/>
+                <div class="digest">
+                    <span style="font-weight: bold">摘要：</span>
+                    <span id="description" th:text="${treatise.description}"></span>
+                </div>
+                <br/>
+                <ul class="baseInfo">
+                    <li>
+                        <div class="info_left">ISBN：</div>
+                        <div class="info_right author" th:text="${treatise.ISBN}">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">作者：</div>
+                        <div class="info_right author" th:text="${author.nickname}">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">出版社：</div>
+                        <div class="info_right author" th:text="${treatise.publishHouse}">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">分类：</div>
+                        <div class="info_right author" th:text="${category.name}">
+
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">分类号：</div>
+                        <div class="info_right author" th:text="${category.classifiedNum}">
+                            G202
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">出版日期：</div>
+                        <div class="info_right author" th:text="${#dates.format(treatise.publishDate,'yyyy-MM-dd')}">
+                            2016-5-4
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">语种：</div>
+                        <div class="info_right author" th:text="${language}">
+                            中文
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">关键词：</div>
+                        <div class="info_right author" >
+                            <a href="javascript:void(0)"  th:each="keyword,status:${keywords}" th:text="${keyword}+'&nbsp;&nbsp;'">数据挖掘</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">目录：</div>
+                        <div class="info_right author">
+                            <ul class="bookmark">
+                                <li th:each="chapter,status:${chapters}" style="margin-bottom: 5px;">
+                                    <a th:href="'/reading/'+${treatise.id}+'/'+${chapter.seq}"
+                                       target="_blank"
+                                       th:text="${chapter.title}">第一章 - 数据挖掘入门一</a>
+                                    <!--<span th:if="${chapter.privacy eq 0}">&nbsp;&nbsp;[登录后可见]</span>-->
+                                    <a th:href="'/reading/'+${treatise.id}+'/'+${chapter.seq}" target="_blank">
+                                        <input type="button" class="operator_mini" value="阅读本章"/>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">开本：</div>
+                        <div class="info_right author" th:text="${treatise.bookSize}">
+                            787X980 1/16
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">版次：</div>
+                        <div class="info_right author" th:text="${treatise.edition}">
+                            2015年12月第5版
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info_left">印次：</div>
+                        <div class="info_right author" th:text="${treatise.impression}">
+                            2015年12月第2次印刷
+                        </div>
+                    </li>
+                </ul>
+                <div style="margin-top: 30px;">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist" id="myTabs">
+                        <li role="presentation" class="active">
+                            <a href="#introductory" aria-controls="introductory" role="tab" data-toggle="tab">序</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#preface" aria-controls="preface" role="tab" data-toggle="tab">前言</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#exordium" aria-controls="exordium" role="tab" data-toggle="tab">前言</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#review" aria-controls="review" role="tab" data-toggle="tab">书评</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#postscript" aria-controls="postscript" role="tab" data-toggle="tab">跋</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#appendix" aria-controls="appendix" role="tab" data-toggle="tab">章外后记</a>
+                        </li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="introductory">
+
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="preface">
+                            <h3>前言</h3>
+                            <div id="preface-content">
+
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="exordium">
+                            <h3>绪言</h3>
+                            <div id="exordium-content">
+
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="review">
+
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="postscript">
+                            <h3>跋</h3>
+                            <div id="postscript-content">
+
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="appendix">
+                            <h3>章外后记</h3>
+                            <div id="appendix-content">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="extra">
+                    <h2 class="extra-title">更多信息</h2>
+                </div>
+                <div class="panel panel-default" >
+                    <div class="panel-heading">
+                        <h3 class="panel-title">参考文献</h3>
+                    </div>
+                    <div class="panel-body" id="referenceBooks">
+                        <p>[1]智慧城市中的大数据[J]. 李德仁,姚远,邵振峰. 武汉大学学报(信息科学版). 2014(06)</p>
+                        <p>[2]大数据研究:未来科技及经济社会发展的重大战略领域——大数据的研究现状与科学思考[J]. 李国杰,程学旗. 中国科学院院刊. 2012(06)</p>
+                        <p>[3]非局部均值加权的动态模糊Fisher分类器的遥感图像变化检测[J]. 辛芳芳,焦李成,王桂婷. 测绘学报. 2012(04)</p>
+                        <p>[4]高分辨率对地观测的若干前沿科学问题[J]. 李德仁,童庆禧,李荣兴,龚健雅,张良培. 中国科学:地球科学. 2012(06)</p>
+                        <p>[5]基于元数据的多源遥感影像数据库集成技术研究与实现[J]. 袁德阳,聂娟,邓磊,杨典华,尹川. 测绘科学. 2012(03)</p>
+                        <p>[6]基于向量场模型的多光谱遥感图像多尺度边缘检测[J]. 李晖,肖鹏峰,冯学智,冯莉,王珂. 测绘学报. 2012(01)</p>
+                    </div>
+                </div>
+                <div class="panel panel-default" >
+                    <div class="panel-heading">
+                        <h3 class="panel-title">推荐阅读</h3>
+                    </div>
+                    <div class="panel-body" id="recommends">
+                        <p>[1]智慧城市中的大数据[J]. 李德仁,姚远,邵振峰. 武汉大学学报(信息科学版). 2014(06)</p>
+                        <p>[2]大数据研究:未来科技及经济社会发展的重大战略领域——大数据的研究现状与科学思考[J]. 李国杰,程学旗. 中国科学院院刊. 2012(06)</p>
+                        <p>[3]非局部均值加权的动态模糊Fisher分类器的遥感图像变化检测[J]. 辛芳芳,焦李成,王桂婷. 测绘学报. 2012(04)</p>
+                        <p>[4]高分辨率对地观测的若干前沿科学问题[J]. 李德仁,童庆禧,李荣兴,龚健雅,张良培. 中国科学:地球科学. 2012(06)</p>
+                        <p>[5]基于元数据的多源遥感影像数据库集成技术研究与实现[J]. 袁德阳,聂娟,邓磊,杨典华,尹川. 测绘科学. 2012(03)</p>
+                        <p>[6]基于向量场模型的多光谱遥感图像多尺度边缘检测[J]. 李晖,肖鹏峰,冯学智,冯莉,王珂. 测绘学报. 2012(01)</p>
+                    </div>
+                </div>
+                <div class="panel panel-default" >
+                    <div class="panel-heading">
+                        <h3 class="panel-title">系列丛书</h3>
+                    </div>
+                    <div class="panel-body" id="series">
+                        <p>[1]智慧城市中的大数据[J]. 李德仁,姚远,邵振峰. 武汉大学学报(信息科学版). 2014(06)</p>
+                        <p>[2]大数据研究:未来科技及经济社会发展的重大战略领域——大数据的研究现状与科学思考[J]. 李国杰,程学旗. 中国科学院院刊. 2012(06)</p>
+                        <p>[3]非局部均值加权的动态模糊Fisher分类器的遥感图像变化检测[J]. 辛芳芳,焦李成,王桂婷. 测绘学报. 2012(04)</p>
+                        <p>[4]高分辨率对地观测的若干前沿科学问题[J]. 李德仁,童庆禧,李荣兴,龚健雅,张良培. 中国科学:地球科学. 2012(06)</p>
+                        <p>[5]基于元数据的多源遥感影像数据库集成技术研究与实现[J]. 袁德阳,聂娟,邓磊,杨典华,尹川. 测绘科学. 2012(03)</p>
+                        <p>[6]基于向量场模型的多光谱遥感图像多尺度边缘检测[J]. 李晖,肖鹏峰,冯学智,冯莉,王珂. 测绘学报. 2012(01)</p>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">相关著作</h3>
+                    </div>
+                    <div class="panel-body"  id="relatedBooks">
+                        <p>[1]智慧城市中的大数据[J]. 李德仁,姚远,邵振峰. 武汉大学学报(信息科学版). 2014(06)</p>
+                        <p>[2]大数据研究:未来科技及经济社会发展的重大战略领域——大数据的研究现状与科学思考[J]. 李国杰,程学旗. 中国科学院院刊. 2012(06)</p>
+                        <p>[3]非局部均值加权的动态模糊Fisher分类器的遥感图像变化检测[J]. 辛芳芳,焦李成,王桂婷. 测绘学报. 2012(04)</p>
+                        <p>[4]高分辨率对地观测的若干前沿科学问题[J]. 李德仁,童庆禧,李荣兴,龚健雅,张良培. 中国科学:地球科学. 2012(06)</p>
+                        <p>[5]基于元数据的多源遥感影像数据库集成技术研究与实现[J]. 袁德阳,聂娟,邓磊,杨典华,尹川. 测绘科学. 2012(03)</p>
+                        <p>[6]基于向量场模型的多光谱遥感图像多尺度边缘检测[J]. 李晖,肖鹏峰,冯学智,冯莉,王珂. 测绘学报. 2012(01)</p>
+                    </div>
+                </div>
+            </div>
+        </div><!-- End of main -->
+    </div><!--End of bd-->
+</div>
+
+<div id="foot">Copyright &copy;cafa.com 版权所有</div>
+</body>
+<script src="/js/jquery-1.12.4.min.js" type="text/javascript"></script>
+<script src="/tools/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/web/js/global.js"></script>
+<script type="text/javascript" src="/web/js/pagination.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $.getJSON('/treatise/[[${treatise.id}]]/jsonInfo',null,function (result) {
+            $("#description")[0].innerText = result.description;
+            $("#relatedBooks")[0].innerText = result.relatedBooks;
+            $("#series")[0].innerText = result.series;
+            $("#referenceBooks")[0].innerText = result.referenceBooks;
+            $("#recommends")[0].innerText = result.recommends;
+            $("#appendix-content")[0].innerText = result.appendix;
+            //$("#review-content")[0].innerText = result.review;
+            $("#postscript-content")[0].innerText = result.postscript;
+            $("#exordium-content")[0].innerText = result.exordium;
+            $("#preface-content")[0].innerText = result.preface;
+            //$("#introductory-content")[0].innerText = result.introductory;
+            $.each(result.introductoryList,function (i, n) {
+                $("#introductory").append("<h3>序</h3><div id='introductory-content"+i+"'></div>");
+                $("#introductory-content"+i)[0].innerText = n;
+            })
+            $.each(result.reviewList,function (i, n) {
+                $("#review").append("<h3>书评</h3><div id='review-content"+i+"'></div>");
+                $("#review-content"+i)[0].innerText = n;
+            })
+
+
+        })
+    });
+    $('.searchList').on('click', '.searchItem', function () {
+        $('.searchList .searchItem').removeClass('current');
+        $(this).addClass('current');
+    });
+    $.each($('.subfieldContext'), function (i, item) {
+        $(this).find('li:gt(9)').hide().end().find('li:last').show();
+    });
+
+    $('.subfieldContext .more').click(function (e) {
+        var $more = $(this).parent('.subfieldContext').find('.more');
+        if ($more.hasClass('show')) {
+
+            if ($(this).hasClass('define')) {
+                $(this).parent('.subfieldContext').find('.more').removeClass('show').find('.text').text('自定义');
+            } else {
+                $(this).parent('.subfieldContext').find('.more').removeClass('show').find('.text').text('更多');
+            }
+            $(this).parent('.subfieldContext').find('li:gt(9)').hide().end().find('li:last').show();
+        } else {
+            $(this).parent('.subfieldContext').find('.more').addClass('show').find('.text').text('收起');
+            $(this).parent('.subfieldContext').find('li:gt(9)').show();
+        }
+
+    });
+
+    $('.sideBarShowHide a').click(function (e) {
+        if ($('#main').hasClass('sideBarHide')) {
+            $('#main').removeClass('sideBarHide');
+            $('#container').removeClass('sideBarHide');
+        } else {
+            $('#main').addClass('sideBarHide');
+            $('#container').addClass('sideBarHide');
+        }
+
+    });
+
+    //分页
+    $(".pagination").pagination(500, {
+        current_page: 0, //当前页码
+        items_per_page: 9,
+        display_msg: true,
+        callback: pageselectCallback
+    });
+    function pageselectCallback(page_id, jq) {
+        alert("当前页id(由0开始)：" + page_id + "，\n每页显示：" + this.items_per_page + "条数据");
+    }
+
+    setHeight();
+    $(window).resize(function () {
+        setHeight();
+    });
+
+    function setHeight() {
+        if ($('#container').outerHeight() < $(window).height()) {
+            $('#container').height($(window).height() - 33);
+        }
+    }
+</script>
+</html>
